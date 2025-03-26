@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
 import java.util.Stack;
 
 public class Main {
@@ -89,7 +87,12 @@ public class Main {
         if(start >= end) {
             logger.warning("No factor found in expression: " + express);
             if(express.indexOf('(') == -1 && express.indexOf(')') == -1){
-                number = Double.parseDouble(express);
+                try{
+                    number = Double.parseDouble(express);
+                } catch (NumberFormatException e) {
+                    logger.severe(e.getMessage());
+                    throw new RuntimeException(e);
+                }
             }
         }
 
