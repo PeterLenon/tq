@@ -2,7 +2,6 @@ package com.example;
 import org.apache.commons.cli.*;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,15 +10,7 @@ import java.util.Stack;
 
 public class Main {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
-    private static final AP_calculator AP_calculator = new AP_calculator();
-    private static final AF_calculator AF_calculator = new AF_calculator();
-    private static final AG_calculator AG_calculator = new AG_calculator();
-    private static final PF_calculator PF_calculator = new PF_calculator();
-    private static final PA_calculator PA_calculator = new PA_calculator();
-    private static final PG_calculator PG_calculator = new PG_calculator();
-    private static final FP_calculator FP_calculator = new FP_calculator();
-    private static final FA_calculator FA_calculator = new FA_calculator();
-    private static final FG_calculator FG_calculator = new FG_calculator();
+    private static final Calculator tq = new Calculator();
 
     private static String[] preprocessArgs(String[] args) {
         Stack<Character> wellFormedStack = new Stack<>();
@@ -128,31 +119,31 @@ public class Main {
 
             switch (operator){
                 case "a/p":
-                    number = number * AP_calculator.calculate(interest, periods);
+                    number = number * tq.AP_factor(interest, periods);
                     break;
                 case "a/f":
-                    number = number * AF_calculator.calculate(interest, periods);
+                    number = number * tq.AF_factor(interest, periods);
                     break;
                 case "a/g":
-                    number = number * AG_calculator.calculate(interest, periods);
+                    number = number * tq.AG_factor(interest, periods);
                     break;
                 case "p/f":
-                    number = number * PF_calculator.calculate(interest, periods);
+                    number = number * tq.PF_factor(interest, periods);
                     break;
                 case "p/g":
-                    number = number * PG_calculator.calculate(interest, periods);
+                    number = number * tq.PG_factor(interest, periods);
                     break;
                 case "p/a":
-                    number = number *  PA_calculator.calculate(interest, periods);
+                    number = number *  tq.PA_factor(interest, periods);
                     break;
                 case "f/p":
-                    number = number * FP_calculator.calculate(interest, periods);
+                    number = number * tq.FP_factor(interest, periods);
                     break;
                 case "f/g":
-                    number = number *  FG_calculator.calculate(interest, periods);
+                    number = number *  tq.FG_factor(interest, periods);
                     break;
                 case "f/a":
-                    number = number * FA_calculator.calculate(interest, periods);
+                    number = number * tq.FA_factor(interest, periods);
                     break;
                 default:
                     logger.warning(factor + " is an unrecognised argument.");

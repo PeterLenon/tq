@@ -31,6 +31,13 @@
       </plugin>
     </plugins>
   </build>
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub PeterLenon Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/PeterLenon/tq</url>
+    </repository>
+  </distributionManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>22</maven.compiler.target>
