@@ -11,29 +11,36 @@ public class Main {
     private static final Calculator tq = new Calculator();
 
     private static String[] preprocessArgs(String[] args) {
-        Stack<Character> wellFormedStack = new Stack<>();
+        Stack<Character> openBraceStack = new Stack<>();
         Stack<Character> factorStack = new Stack<>();
         for (String arg : args) {
             for (int i = 0; i < arg.length(); i++) {
                 char c = arg.charAt(i);
                 if(c =='('){
                     if ( i == 0){
-                        logger.severe(arg + " is not a well formed argument");
+                        logger.severe(arg + " is not a well formed argument. No factor amount inserted before the parenthesis");
+                        System.exit(1);
                     }else{
-                        wellFormedStack.push(c);
+                        openBraceStack.push(c);
                     }
                 }else if( c == ')') {
-                    if (i == 0 || wellFormedStack.isEmpty() || factorStack.size() != 2) {
-                        logger.severe(arg + " is not a well formed argument");
+                    if (openBraceStack.isEmpty() || factorStack.size() != 2) {
+                        if (openBraceStack.isEmpty()) {
+                            logger.severe(arg + " this argument has imbalanced parenthesis.");
+                        } else if (factorStack.isEmpty()) {
+                            logger.severe(arg + " this argument has not enough arguments between the parenthesis");
+                        }
+                        System.exit(1);
                     }else {
-                        wellFormedStack.pop();
+                        openBraceStack.pop();
+                        factorStack.clear();
                     }
-                }else if(!wellFormedStack.isEmpty() && c == ','){
+                }else if(!openBraceStack.isEmpty() && c == ','){
                     factorStack.push(c);
                 }
             }
-            if (!wellFormedStack.isEmpty()) {
-                logger.severe(arg + " is not a well formed argument");
+            if (!openBraceStack.isEmpty()) {
+                logger.severe(arg + " has more open braces than expected");
                 System.exit(1);
             }
             factorStack.clear();
@@ -147,6 +154,87 @@ public class Main {
                     break;
                 case "f/a":
                     number = number * tq.FA_factor(interest, periods);
+                    break;
+                case "macrs_ar":
+                    logger.info("macrs_ar format : 1(`macrs_ar`, lifespan, year)");
+                    int lifespan = (int) interest;
+                    int year = (int) periods;
+                    number = tq.MACRS_depreciation_rate(lifespan, year);
+                    break;
+                case "macrs_ad":
+                    logger.info("macrs_ad format : initial cost(`macrs_ad`, lifespan, year)");
+                    int lifespan2 = (int) interest;
+                    int year2 = (int) periods;
+                    double initial_cost = number;
+                    number = 1 * tq.MACRS_annual_depreciation(initial_cost, lifespan2, year2);
+                    break;
+                case "macrs_bv":
+                    logger.info("macrs_bv format : initial cost(`macrs_bv`, lifespan, year)");
+                    int lifespan3 = (int) interest;
+                    int year3 = (int) periods;
+                    double initial_cost3 = number;
+                    number = tq.MACRS_book_value(initial_cost3, lifespan3, year3);
+                    break;
+                case "sl_fr":
+                    logger.info("sl_fr format : 1(`sl_fr`, lifespan, 0)");
+                    int lifespan4 = (int) interest;
+                    number = tq.straight_line_fixed_depreciation_rate(lifespan4);
+                    break;
+                case "sl_ar":
+                    logger.info("sl_ad format : 1(`sl_ar`, lifespan, 0)");
+                    int lifespan5 = (int) interest;
+                    number = tq.straight_line_annual_depreciation_rate(lifespan5);
+                    break;
+                case "sl_ad":
+                    logger.info("sl_ad format : initial cost(`sl_ad`, salvage value, lifespan)");
+                    int salvage_value = (int) interest;
+                    int lifespan6 = (int) periods;
+                    double initial_cost6 = number;
+                    number = tq.straight_line_annual_depreciation(initial_cost6, salvage_value, lifespan6);
+                    break;
+                case "sl_bv" :
+                    logger.info("sl_bv format : initial cost(`sl_bv`, annual depreciation amount, year)");
+                    double initial_cost7 = number;
+                    double annual_depreciation = interest;
+                    int year7 = (int) periods;
+                    number = tq.straight_line_book_value(initial_cost7, annual_depreciation, year7);
+                    break;
+                case "ddb_fr":
+                    logger.info("ddb_fr format : 1(`ddb_fr`, lifespan, 0)");
+                    int lifespan8 = (int) interest;
+                    number = tq.double_declining_fixed_depreciation_rate(lifespan8);
+                    break;
+                case "ddb_ar":
+                    logger.info("ddb_ar format : 1(`ddb_ar`, lifespan, year)");
+                    int lifespan9 = (int) interest;
+                    int year9 = (int) periods;
+                    number = tq.double_declining_annual_depreciation_rate(lifespan9, year9);
+                    break;
+                case "ddb_ad":
+                    logger.info("ddb_ad format : initial cost(`ddv_ad`, lifespan, year)");
+                    double initial_cost10 = number;
+                    int lifespan10 = (int) interest;
+                    int year10 = (int) periods;
+                    number = tq.double_declining_annual_depreciation(initial_cost10, lifespan10, year10);
+                    break;
+                case "ddb_bv":
+                    logger.info("ddb_bv format : initial cost(`ddb_bv`, lifespan, year)");
+                    double initial_cost11 = number;
+                    int lifespan11 = (int) interest;
+                    int year11 = (int) periods;
+                    number = tq.double_declining_book_value(initial_cost11, lifespan11, year11);
+                    break;
+                case "db_ad":
+                    logger.info("db_ad format : initial cost(`db_ad`, stated fixed rate %, year)");
+                    double initial_cost12 = number;
+                    int year12 = (int) periods;
+                    number = tq.declining_balance_annual_depreciation(initial_cost12, interest, year12);
+                    break;
+                case "db_bv":
+                    logger.info("db_bv format : initial cost(`db_bv`, stated fixed rate %, year)");
+                    double initial_cost13 = number;
+                    int year13 = (int) periods;
+                    number = tq.declining_balance_book_value(initial_cost13, interest, year13);
                     break;
                 default:
                     logger.warning(factor + " is an unrecognised argument.");
